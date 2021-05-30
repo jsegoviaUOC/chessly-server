@@ -18,4 +18,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::resource('/chess-users', 'ChessUserController');
+
+Route::resource('/game', 'GameController');
+Route::resource('/game/{game_id}/move', 'MoveController');
+
+Route::get('/game-status/{id}', 'GameController@getStatus');
+Route::get('/game/{game_id}/last-move', 'MoveController@getLastMove');
+
+Route::post('/game/{game_id}/set-winner/{player_id}', 'GameController@setWinner');
+Route::post('/game/{game_id}/exit/{player_id}', 'GameController@exitGame');
 Route::post('/login', 'LoginController@login');
+Route::post('/connect-to-game/{player_id}', 'GameController@setVisitor');

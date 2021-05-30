@@ -9,11 +9,15 @@ class LoginController extends Controller
 {
     public function login(Request $request){
 
-        $count = ChessUsers::query()
+        $user = ChessUsers::query()
             ->where('login',request('login'))
             ->where('password',request('password'))
-            ->count();
-            
-        return $count;
+            ->first();
+        
+        if(!$user){
+        	return 0;
+        }
+
+        return $user->id;
     }
 }

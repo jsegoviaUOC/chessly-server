@@ -91,7 +91,7 @@ class GameController extends Controller
 
     public function getStatus($id)
     {
-    	$game = Game::findOrFail($id);
+    	$game = Game::withTrashed()->find($id);
 
     	if($game->winner_id != null){
     		return 2;
@@ -149,4 +149,20 @@ class GameController extends Controller
             
         return $game->id;
     }
+
+    public function getUsername($game_id, Request $request)
+    {
+        $game = Game::withTrashed()->find($game_id);
+
+        if(request('user') == "visitor"){
+            return $game->visitor->login;
+        }else{
+            if(request('user') == "creator"){
+                return $game->creator->login;
+            }
+        }
+            
+        return null;
+    }
+    
 }

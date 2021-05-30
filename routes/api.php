@@ -24,6 +24,7 @@ Route::resource('/game/{game_id}/move', 'MoveController');
 
 Route::get('/game-status/{id}', 'GameController@getStatus');
 Route::get('/game/{game_id}/last-move', 'MoveController@getLastMove');
+Route::get('/game/{game_id}/username', 'GameController@getUsername');
 
 Route::post('/game/{game_id}/set-winner/{player_id}', 'GameController@setWinner');
 Route::post('/game/{game_id}/exit/{player_id}', 'GameController@exitGame');

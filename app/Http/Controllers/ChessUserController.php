@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\ChessUsers;
+use App\Game;
+use App\Move;
 use App\Http\Resources\ChessUsersResource;
 use App\Http\Resources\ChessUserResource;
 use App\Http\Requests\NewChessUserRequest;
@@ -95,5 +97,34 @@ class ChessUserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getStatistics($id)
+    {
+        $statistics = array();
+
+        $statistics['wins'] = Game::where('winner_id',$id)->count();
+        $statistics['creatorCustom'] = Game::where('creator_id',$id)->where('type','custom')->count();
+        $statistics['creatorClassic'] = Game::where('creator_id',$id)->where('type','classic')->count();
+        $statistics['visitorCustom'] = Game::where('visitor_id',$id)->where('type','custom')->count();
+        $statistics['visitorClassic'] = Game::where('visitor_id',$id)->where('type','classic')->count();
+
+        $statistics['totalGames'] = $statistics['visitorCustom'] + $statistics['visitorClassic'] + $statistics['creatorClassic'] + $statistics['creatorCustom'];
+
+        $statisticsWhite = Game::where('visitor_id',$id)->where('color_creator','B')->count() + Game::where('creator_id',$id)->where('color_creator','W')->count();
+        $statisticsBlack = Game::where('visitor_id',$id)->where('color_creator','W')->count() + Game::where('creator_id',$id)->where('color_creator','B')->count();
+
+        if($statistics['totalGames'] > 0 ){
+            $statistics['statisticsWhite'] = round( ($statisticsWhite * 100) / $statistics['totalGames'], 2);
+            $statistics['statisticsBlack'] = round( ($statisticsBlack * 100) / $statistics['totalGames'], 2);
+        } else {
+            $statistics['statisticsWhite'] = 0.00;
+            $statistics['statisticsBlack'] = 0.00;
+        }
+
+        $statistics['totalMoves'] = Move::where('player_id',$id) ->count();
+
+        return json_encode($statistics);
+
     }
 }

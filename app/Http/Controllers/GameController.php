@@ -137,6 +137,7 @@ class GameController extends Controller
         $game = Game::query()
             ->where('type',request('type'))
             ->whereNull('visitor_id')
+            ->where('creator_id','!=',$player_id)
             ->first();
 
         if(!$game){
